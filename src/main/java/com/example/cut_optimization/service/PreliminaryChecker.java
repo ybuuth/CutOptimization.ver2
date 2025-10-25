@@ -5,7 +5,6 @@ import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.EndlessWorkpiece;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 
@@ -16,7 +15,7 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class PreliminaryChecker {
 
-    public void initializePreliminarySettings(InitialDataOptimization initialDataOptimization) {
+    public void initializePreliminarySettings(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         checkNotEmptyDetails(initialDataOptimization);
         checkNotEmptyWorkpieces(initialDataOptimization);
         checkNotEmptyTemperature(initialDataOptimization);
@@ -30,19 +29,19 @@ public class PreliminaryChecker {
         initAreaIdGenerator(initialDataOptimization);
     }
 
-    private static void initAreaIdGenerator(InitialDataOptimization initialDataOptimization) {
+    private static void initAreaIdGenerator(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getAreaIdGenerator() == null) {
             initialDataOptimization.setAreaIdGenerator(new AreaIdGenerator());
         }
     }
 
-    private static void initFreeAreaAndOccupiedArea(InitialDataOptimization initialDataOptimization) {
+    private static void initFreeAreaAndOccupiedArea(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         initialDataOptimization.setFreeAreas(new ArrayList<>());
         initialDataOptimization.setOccupiedAreas(new ArrayList<>());
     }
 
 
-    private static void checkSizeOfDetailsDotNotExceedSizeOfWorkpieces(InitialDataOptimization initialDataOptimization) {
+    private static void checkSizeOfDetailsDotNotExceedSizeOfWorkpieces(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
 
         for (TypeOfMaterial typeOfMaterial : initialDataOptimization.getTypesOfMaterial()) {
 
@@ -96,7 +95,7 @@ public class PreliminaryChecker {
         }
     }
 
-    private static void fillTypesOfMaterial(InitialDataOptimization initialDataOptimization) {
+    private static void fillTypesOfMaterial(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
 
         if (initialDataOptimization.getTypesOfMaterial() == null || initialDataOptimization.getTypesOfMaterial().isEmpty()) {
 
@@ -141,13 +140,13 @@ public class PreliminaryChecker {
         }
     }
 
-    private static void checkNotEmptyEndlessWorkpieces(InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyEndlessWorkpieces(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getEndlessWorkpieces() == null) {
             initialDataOptimization.setEndlessWorkpieces(new ArrayList<>());
         }
     }
 
-    private static void checkWorkpicesSquareMoreThanDetailsSquare(InitialDataOptimization initialDataOptimization) {
+    private static void checkWorkpicesSquareMoreThanDetailsSquare(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
 
         for (TypeOfMaterial typeOfMaterial : initialDataOptimization.getTypesOfMaterial()) {
 
@@ -170,25 +169,25 @@ public class PreliminaryChecker {
 
     }
 
-    private static void checkNotEmptyTemperature(InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyTemperature(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getInitialTemperature() == 0) {
             throw new CommonException("Initial temperature can't be zero", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private static void checkNotEmptyWorkpieces(InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyWorkpieces(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getWorkpieces().isEmpty() && initialDataOptimization.getEndlessWorkpieces().isEmpty()) {
             throw new CommonException("Must be at least one workpiece or endless workpiece", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private static void checkNotEmptyDetails(InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyDetails(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getDetails().isEmpty()) {
             throw new CommonException("Must be at least one detail", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void setDetailsAndWorkpiecesAmountAsOneAndSetId(InitialDataOptimization initialDataOptimization) {
+    private void setDetailsAndWorkpiecesAmountAsOneAndSetId(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         List<Detail> newDetails = new ArrayList<>();
 
         AtomicInteger idCounter = new AtomicInteger(1);
@@ -229,7 +228,7 @@ public class PreliminaryChecker {
         }
     }
 
-    private void calculateArea(InitialDataOptimization initialDataOptimization) {
+    private void calculateArea(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
         initialDataOptimization.calculateAllSquares();
     }
 }

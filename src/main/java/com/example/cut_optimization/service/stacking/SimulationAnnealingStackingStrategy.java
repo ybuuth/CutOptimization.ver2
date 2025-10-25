@@ -2,11 +2,11 @@ package com.example.cut_optimization.service.stacking;
 
 import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.StackingSequence;
+import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
-import com.example.cut_optimization.service.AreaManager;
+import com.example.cut_optimization.optimizators.AreaManager;
 import com.example.cut_optimization.service.ResultEvaluator;
 import com.example.cut_optimization.service.TransitionManager;
 import com.example.cut_optimization.service.mutation.SequenceMutator;
@@ -41,17 +41,16 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
 
 
     @Override
-    public void stack(InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
     }
 
     @Override
-    public void stack(InitialDataOptimization initialData) {
+    public void stack(TypeOfMaterial.InitialDataOptimization initialData) {
 
         ResultStacking bestResultStacking = initialData.getBestResultStacking();
 
         List<StackingSequence> baseStackingSequences = bestResultStacking.getStackingSequences();
         List<Workpiece> usedWorkpieces = areaManager.getUsedWorkpieces(initialData.getWorkpieces(), baseStackingSequences);
-        log.info("Used workpieces: " + usedWorkpieces);
         initialData.setWorkpieces(usedWorkpieces);
 
         initialData.getFreeAreas().clear();

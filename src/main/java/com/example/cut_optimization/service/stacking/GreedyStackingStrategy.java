@@ -1,12 +1,12 @@
 package com.example.cut_optimization.service.stacking;
 
 import com.example.cut_optimization.dto.ResultStacking;
+import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.details.Detail;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
-import com.example.cut_optimization.service.AreaManager;
+import com.example.cut_optimization.optimizators.AreaManager;
 import com.example.cut_optimization.service.ResultEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(TypeOfMaterial.InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
 
         ResultStacking bestResultStacking = null;
         ResultStacking currentResultStacking = new ResultStacking();
@@ -146,6 +146,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization initialDataOptimization) {}
+    public void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {}
 
 }

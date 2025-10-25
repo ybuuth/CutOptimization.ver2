@@ -6,7 +6,6 @@ import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.baseDto.BaseArea;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +37,7 @@ public class ResultStacking implements Cloneable {
         }
     }
 
-    public void restoreWayOfLayingAreas(int key, InitialDataOptimization initialDataOptimization) {
+    public void restoreWayOfLayingAreas(int key, TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
 
         CuttingLayout cuttingLayout = wayOfLayingAreas.get(key);
         initialDataOptimization.restoreFrom(cuttingLayout);

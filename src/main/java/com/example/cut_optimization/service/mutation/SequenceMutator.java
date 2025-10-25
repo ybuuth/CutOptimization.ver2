@@ -1,7 +1,6 @@
 package com.example.cut_optimization.service.mutation;
 
 import com.example.cut_optimization.dto.StackingSequence;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

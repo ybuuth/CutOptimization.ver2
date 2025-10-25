@@ -1,11 +1,12 @@
 package com.example.cut_optimization.service;
 
 import com.example.cut_optimization.dto.ResultStacking;
+import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
+import com.example.cut_optimization.optimizators.AreaManager;
 import com.example.cut_optimization.service.stacking.StackingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +34,7 @@ public class StackingManager {
         this.areaManager = areaManager;
     }
 
-    public Optional<ResultStacking> performInitialLaying(InitialDataOptimization initialData) {
+    public Optional<ResultStacking> performInitialLaying(TypeOfMaterial.InitialDataOptimization initialData) {
 
         ResultStacking resultStackingInOneWorkpiece = new ResultStacking();
 
@@ -86,12 +87,12 @@ public class StackingManager {
         return Optional.of(bestResultStacking);
     }
 
-    public Optional<ResultStacking> optimizeInitialLaying(InitialDataOptimization initialData) {
+    public Optional<ResultStacking> optimizeInitialLaying(TypeOfMaterial.InitialDataOptimization initialData) {
         simulatedAnnealingStackingStrategy.stack(initialData);
         return Optional.of(initialData.getBestResultStacking());
     }
 
-    private boolean setupSingleWorkpieceForStacking(InitialDataOptimization initialData) {
+    private boolean setupSingleWorkpieceForStacking(TypeOfMaterial.InitialDataOptimization initialData) {
         boolean hasError = false;
         //найдем минимально возможную по площади заготовку с площадью превышающей область всех деталей
         Optional<Workpiece> workpiece = findSuitableWorkpieceBySquare(initialData.getWorkpieces(), initialData.getDetails());
@@ -124,7 +125,7 @@ public class StackingManager {
     }
 
 
-    public void finalOptimization(InitialDataOptimization initialData) {
+    public void finalOptimization(TypeOfMaterial.InitialDataOptimization initialData) {
         if (initialData.getFreeAreas().isEmpty()) {
             return;
         }
@@ -158,5 +159,4 @@ public class StackingManager {
             } while (hasReplacement);
         }
     }
-
 }

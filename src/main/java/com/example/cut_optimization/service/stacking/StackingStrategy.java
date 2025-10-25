@@ -1,9 +1,8 @@
 package com.example.cut_optimization.service.stacking;
 
-import com.example.cut_optimization.dto.ResultStacking;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
+import com.example.cut_optimization.dto.TypeOfMaterial;
 
 public interface StackingStrategy {
-    void stack(InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece);
-    void stack(InitialDataOptimization initialDataOptimization);
+    void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece);
+    void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization);
 }

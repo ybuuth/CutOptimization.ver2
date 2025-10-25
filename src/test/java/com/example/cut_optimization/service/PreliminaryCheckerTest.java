@@ -5,8 +5,6 @@ import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.EndlessWorkpiece;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class PreliminaryCheckerTest {
 
-    private static InitialDataOptimization initialDataOptimization;
+    private static TypeOfMaterial.InitialDataOptimization initialDataOptimization;
 
     @BeforeEach
     void beforeEach() {
-        initialDataOptimization = new InitialDataOptimization();
+        initialDataOptimization = new TypeOfMaterial.InitialDataOptimization();
         initialDataOptimization.setInitialTemperature(10);
         List<Detail> details = new ArrayList<>();
         Detail detail = new Detail();

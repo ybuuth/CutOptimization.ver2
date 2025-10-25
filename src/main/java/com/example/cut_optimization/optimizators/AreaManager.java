@@ -1,15 +1,17 @@
-package com.example.cut_optimization.service;
+package com.example.cut_optimization.optimizators;
 
 import com.example.cut_optimization.dto.PossibleFreeAreas;
 import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.StackingSequence;
+import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.areas.SurroundingAreasInfo;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.dto.results.AreaPlacementResult;
-import com.example.cut_optimization.optimizators.InitialDataOptimization;
+import com.example.cut_optimization.service.AreaIdGenerator;
+import com.example.cut_optimization.service.ResultEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class AreaManager {
 
     private final ResultEvaluator resultEvaluator;
+    private final AreaMerger areaMerger;
 
     @Autowired
-    public AreaManager(ResultEvaluator resultEvaluator) {
+    public AreaManager(ResultEvaluator resultEvaluator, AreaMerger areaMerger) {
         this.resultEvaluator = resultEvaluator;
+        this.areaMerger = areaMerger;
     }
 
     public List<FreeArea> getFreeAreasSuitableForDetail(Detail detail, List<FreeArea> freeAreas, boolean isDisableRotation) {
@@ -37,7 +41,7 @@ public class AreaManager {
                 .collect(Collectors.toList());
     }
 
-    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, InitialDataOptimization initialData) {
+    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, TypeOfMaterial.InitialDataOptimization initialData) {
 
         setDetailAlongArea(detail, freeArea);
 
@@ -50,7 +54,7 @@ public class AreaManager {
     }
 
     public void stackDetailIntoFreeArea(Detail detail, FreeArea freeArea,
-                                                                 InitialDataOptimization initialData) {
+                                                                 TypeOfMaterial.InitialDataOptimization initialData) {
 
         boolean canPlace = initialData.isDisableRotation() ? freeArea.canStackAlong(detail) : freeArea.canStack(detail);
         if (!canPlace) {
@@ -108,89 +112,39 @@ public class AreaManager {
                     .collect(Collectors.toList());
 
             for (FreeArea freeArea : freeAreasByCurrentWorkpiece) {
-                List<FreeArea> candidates = freeAreasByCurrentWorkpiece.stream()
-                        .filter(fa1 -> freeArea.getUp() + freeArea.getHeight() + sawCutWidth == fa1.getUp()
-                                && freeArea.getLeft() + freeArea.getWidth() == fa1.getLeft() + fa1.getWidth()
-                                && freeArea.getSquare() > fa1.getSquare()
-                                && freeArea.getLeft() > fa1.getLeft())
-                        .toList();
 
-                for (FreeArea freeArea1 : candidates) {
-                    freeArea1.setWidth(freeArea.getLeft() - sawCutWidth - freeArea1.getLeft());
-                    freeArea1.calculateSquare();
-                    freeArea.setHeight(freeArea.getHeight() + sawCutWidth + freeArea1.getHeight());
-                    freeArea.calculateSquare();
+                hasEnlarge = areaMerger.mergeLowerFreeAreaVerticallyWithOverlapRight(sawCutWidth, freeArea, freeAreasByCurrentWorkpiece, hasEnlarge);
 
-                    hasEnlarge = true;
-                    break;
-                }
                 if (hasEnlarge) {
                     break;
                 }
-                //объединим области находящиеся на одной горизонтали равные по высоте
-                candidates = freeAreasByCurrentWorkpiece.stream()
-                        .filter(fa1 -> freeArea.getUp() == fa1.getUp() &&
-                                freeArea.getHeight() == fa1.getHeight() &&
-                                freeArea.getLeft() + freeArea.getWidth() + sawCutWidth == fa1.getLeft())
-                        .toList();
 
-                for (FreeArea candidate : candidates) {
-                    freeArea.setWidth(freeArea.getWidth() + sawCutWidth + candidate.getWidth());
-                    freeArea.calculateSquare();
-                    freeAreasToRemove.add(candidate);
-                    hasEnlarge = true;
-                    break;
-                }
+                //объединим области находящиеся на одной горизонтали равные по высоте
+                hasEnlarge = areaMerger.mergeHorizontalAdjacentFreeAreas(sawCutWidth, freeArea,
+                                                                                    freeAreasByCurrentWorkpiece,
+                                                                                    freeAreasToRemove,
+                                                                                    hasEnlarge);
+
                 if (hasEnlarge) {
                     break;
                 }
                 // Если свободная область лежит на всю ширину детали, то ее можно опустить вниз если она не касается нижней части заготовки,
                 // а занятые области поднять на высоту свободной области
-                if (freeArea.getWidth() == workpiece.getWidth() && !isAtBottomEdgeOfWorkpiece(freeArea, workpiece)) {
-                    // отобрать все области, лежащие ниже текущей свободной области и поднять их на высоту этой области, а эту область сдвинуть вниз
-                    double moveUp = freeArea.getHeight() + sawCutWidth;
-                    double diffInYMovingAreas = 0.0;
-
-                    freeAreasByCurrentWorkpiece = freeAreasByCurrentWorkpiece.stream()
-                            .filter(fa1 -> fa1.getUp() > freeArea.getUp())
-                            .filter(fa1 -> fa1.getAreaId() != freeArea.getAreaId())
-                            .filter(fa1 -> !(fa1.getWidth() == workpiece.getWidth() && isAtBottomEdgeOfWorkpiece(fa1, workpiece)))
-                            .peek(fa1 -> fa1.setUp(fa1.getUp() - moveUp))
-                            .collect(Collectors.toList());
-
-                    for (OccupiedArea occupiedArea : occupiedAreasByCurrentWorkpiece) {
-                        if (occupiedArea.getUp() < freeArea.getUp()) {
-                            continue;
-                        }
-                        if (occupiedArea.getLeft() == 0) {
-                            diffInYMovingAreas += occupiedArea.getHeight() + sawCutWidth;
-                        }
-                        occupiedArea.setUp(occupiedArea.getUp() - moveUp);
-                    }
-                    freeArea.setUp(freeArea.getUp() + diffInYMovingAreas);
-                    if (diffInYMovingAreas > 0) {
-                        hasEnlarge = true;
-                    }
-                }
+                hasEnlarge = areaMerger.moveFullWidthFreeAreaDownWithLiftingLowerAreas(freeArea,
+                                                                                                freeAreasByCurrentWorkpiece,
+                                                                                                occupiedAreasByCurrentWorkpiece,
+                                                                                                sawCutWidth,
+                                                                                                workpiece);
                 if (hasEnlarge) {
                     break;
                 }
+
                 //объединим области находящиеся на одной вертикали, равные по ширине
-                candidates = freeAreasByCurrentWorkpiece.stream()
-                        .filter(fa1 -> freeArea.getLeft() == fa1.getLeft() &&
-                                freeArea.getWidth() == fa1.getWidth() &&
-                                freeArea.getUp() + freeArea.getHeight() + sawCutWidth == fa1.getUp())
-                        .toList();
-
-                for (FreeArea candidate : candidates) {
-                    freeArea.setHeight(freeArea.getHeight() + sawCutWidth + candidate.getHeight());
-                    freeArea.calculateSquare();
-                    //freeArea.setAreaId(increaseAreaNumerator());
-                    freeAreasToRemove.add(candidate);
-
-                    hasEnlarge = true;
-                    break;
-                }
+                hasEnlarge = areaMerger.mergeVerticalAdjacentFreeAreas(sawCutWidth,
+                                                                                freeArea,
+                                                                                freeAreasByCurrentWorkpiece,
+                                                                                freeAreasToRemove,
+                                                                                hasEnlarge);
                 if (hasEnlarge) {
                     break;
                 }
@@ -212,11 +166,8 @@ public class AreaManager {
                         .filter(w -> w.getId() == id))
                 .collect(Collectors.toList());
     }
-    private boolean isAtBottomEdgeOfWorkpiece(FreeArea freeArea, Workpiece workpiece) {
-        return freeArea.getUp() + freeArea.getHeight() == workpiece.getHeight();
-    }
 
-    private void updateInitialData(InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
+    private void updateInitialData(TypeOfMaterial.InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
 
         initialData.getFreeAreas().remove(areaPlacementResult.getAreaToRemove());
 
@@ -281,7 +232,7 @@ public class AreaManager {
     }
 
     public void stackDetailsWithStackingSequences(List<StackingSequence> stackingSequences,
-                                                  InitialDataOptimization initialData,
+                                                  TypeOfMaterial.InitialDataOptimization initialData,
                                                   ResultStacking currentResultStacking) {
 
         PossibleFreeAreas possibleFreeAreas;
@@ -325,7 +276,7 @@ public class AreaManager {
         enlargeAndCutOffLowerAreaVertically(initialData.getWorkpieces(), initialData.getFreeAreas(), initialData.getOccupiedAreas(), initialData.getSawCutWidth());
     }
 
-    private void addAllFreeAreasFromPossibleFreeAreas(InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
+    private void addAllFreeAreasFromPossibleFreeAreas(TypeOfMaterial.InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
 
         initialData.getFreeAreas().clear();
 
@@ -387,7 +338,7 @@ public class AreaManager {
      * Пытается переместить занятую область в свободную с меньшей площадью,
      * чтобы улучшить коэффициент заполнения.
      */
-    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, InitialDataOptimization initialData, ResultStacking bestResultStacking) {
+    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, TypeOfMaterial.InitialDataOptimization initialData, ResultStacking bestResultStacking) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -499,7 +450,7 @@ public class AreaManager {
         return Optional.empty();
     }
 
-    private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea, Workpiece currentWorkpiece, InitialDataOptimization initialData) {
+    private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea, Workpiece currentWorkpiece, TypeOfMaterial.InitialDataOptimization initialData) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -575,7 +526,7 @@ public class AreaManager {
         }
     }
 
-    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, InitialDataOptimization initialData) {
+    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, TypeOfMaterial.InitialDataOptimization initialData) {
 
         double sawCutWidth = initialData.getSawCutWidth();
         AreaIdGenerator areaIdGenerator = initialData.getAreaIdGenerator();
