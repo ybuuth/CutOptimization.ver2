@@ -1,7 +1,7 @@
 package com.example.cut_optimization.service.stacking;
 
+import com.example.cut_optimization.dto.InitialDataOptimization;
 import com.example.cut_optimization.dto.ResultStacking;
-import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Detail;
@@ -26,7 +26,7 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(TypeOfMaterial.InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(InitialDataOptimization.InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
 
         ResultStacking bestResultStacking = null;
         ResultStacking currentResultStacking = new ResultStacking();
@@ -141,6 +141,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization) {}
+    public void stack(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {}
 
 }

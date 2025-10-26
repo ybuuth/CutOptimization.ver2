@@ -37,7 +37,7 @@ public class ResultStacking implements Cloneable {
         }
     }
 
-    public void restoreWayOfLayingAreas(int key, TypeOfMaterial.InitialDataOptimization initialDataOptimization) {
+    public void restoreWayOfLayingAreas(int key, InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
 
         CuttingLayout cuttingLayout = wayOfLayingAreas.get(key);
         initialDataOptimization.restoreFrom(cuttingLayout);

@@ -1,7 +1,7 @@
 package com.example.cut_optimization.controller;
 
+import com.example.cut_optimization.dto.InitialDataOptimization;
 import com.example.cut_optimization.dto.ResultDataOptimization;
-import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.exception.CommonException;
 import com.example.cut_optimization.service.OptimizeDispatcherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +29,7 @@ public class OptimizationController {
     @PostMapping
     public ResponseEntity<ResultDataOptimization> optimization(@RequestBody String body) throws JsonProcessingException {
         log.info("body: {}", body);
-        TypeOfMaterial.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, TypeOfMaterial.InitialDataOptimization.class);
+        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.optimize(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);
@@ -40,7 +40,7 @@ public class OptimizationController {
 
     @PostMapping("/postprocess")
     public ResponseEntity<ResultDataOptimization> postprocess(@RequestBody String body) throws JsonProcessingException {
-        TypeOfMaterial.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, TypeOfMaterial.InitialDataOptimization.class);
+        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.postProcessOnly(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);
@@ -51,7 +51,7 @@ public class OptimizationController {
 
     @PostMapping("/enlarge")
     public ResponseEntity<ResultDataOptimization> enlarge (@RequestBody String body) throws JsonProcessingException {
-        TypeOfMaterial.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, TypeOfMaterial.InitialDataOptimization.class);
+        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.enlarge(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);

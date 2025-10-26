@@ -1,9 +1,6 @@
 package com.example.cut_optimization.service.optimizators;
 
-import com.example.cut_optimization.dto.PossibleFreeAreas;
-import com.example.cut_optimization.dto.ResultStacking;
-import com.example.cut_optimization.dto.StackingSequence;
-import com.example.cut_optimization.dto.TypeOfMaterial;
+import com.example.cut_optimization.dto.*;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.areas.SurroundingAreasInfo;
@@ -37,7 +34,7 @@ public class AreaManager {
         return freeAreaSeeker.getFreeAreasSuitableForDetail(detail, freeAreas, isDisableRotation);
     }
 
-    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, TypeOfMaterial.InitialDataOptimization initialData) {
+    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, InitialDataOptimization.InitialDataOptimization initialData) {
 
         setDetailAlongArea(detail, freeArea);
 
@@ -50,7 +47,7 @@ public class AreaManager {
     }
 
     public void stackDetailIntoFreeArea(Detail detail, FreeArea freeArea,
-                                                                 TypeOfMaterial.InitialDataOptimization initialData) {
+                                                                 InitialDataOptimization.InitialDataOptimization initialData) {
 
         boolean canPlace = initialData.isDisableRotation() ? freeArea.canStackAlong(detail) : freeArea.canStack(detail);
         if (!canPlace) {
@@ -163,7 +160,7 @@ public class AreaManager {
                 .collect(Collectors.toList());
     }
 
-    private void updateInitialData(TypeOfMaterial.InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
+    private void updateInitialData(InitialDataOptimization.InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
 
         initialData.getFreeAreas().remove(areaPlacementResult.getAreaToRemove());
 
@@ -227,7 +224,7 @@ public class AreaManager {
     }
 
     public void stackDetailsWithStackingSequences(List<StackingSequence> stackingSequences,
-                                                  TypeOfMaterial.InitialDataOptimization initialData,
+                                                  InitialDataOptimization.InitialDataOptimization initialData,
                                                   ResultStacking currentResultStacking) {
 
         PossibleFreeAreas possibleFreeAreas;
@@ -271,7 +268,7 @@ public class AreaManager {
         enlargeAndCutOffLowerAreaVertically(initialData.getWorkpieces(), initialData.getFreeAreas(), initialData.getOccupiedAreas(), initialData.getSawCutWidth());
     }
 
-    private void addAllFreeAreasFromPossibleFreeAreas(TypeOfMaterial.InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
+    private void addAllFreeAreasFromPossibleFreeAreas(InitialDataOptimization.InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
 
         initialData.getFreeAreas().clear();
 
@@ -333,7 +330,7 @@ public class AreaManager {
      * Пытается переместить занятую область в свободную с меньшей площадью,
      * чтобы улучшить коэффициент заполнения.
      */
-    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, TypeOfMaterial.InitialDataOptimization initialData, ResultStacking bestResultStacking) {
+    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, InitialDataOptimization.InitialDataOptimization initialData, ResultStacking bestResultStacking) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -410,7 +407,7 @@ public class AreaManager {
 
     private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea,
                                                          Workpiece currentWorkpiece,
-                                                         TypeOfMaterial.InitialDataOptimization initialData) {
+                                                         InitialDataOptimization.InitialDataOptimization initialData) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -486,7 +483,7 @@ public class AreaManager {
         }
     }
 
-    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, TypeOfMaterial.InitialDataOptimization initialData) {
+    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, InitialDataOptimization.InitialDataOptimization initialData) {
 
         double sawCutWidth = initialData.getSawCutWidth();
         AreaIdGenerator areaIdGenerator = initialData.getAreaIdGenerator();

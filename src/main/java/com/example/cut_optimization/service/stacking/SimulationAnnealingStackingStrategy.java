@@ -1,8 +1,8 @@
 package com.example.cut_optimization.service.stacking;
 
+import com.example.cut_optimization.dto.InitialDataOptimization;
 import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.StackingSequence;
-import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
 import com.example.cut_optimization.service.ResultEvaluator;
@@ -37,11 +37,11 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(InitialDataOptimization.InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
     }
 
     @Override
-    public void stack(TypeOfMaterial.InitialDataOptimization initialData) {
+    public void stack(InitialDataOptimization.InitialDataOptimization initialData) {
 
         ResultStacking bestResultStacking = initialData.getBestResultStacking();
 
