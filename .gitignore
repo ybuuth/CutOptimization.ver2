@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+###свои ###
+.odt
+/Текстовый документ OpenDocument.odt
