@@ -5,8 +5,10 @@ import com.example.cut_optimization.dto.Stackable;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.baseDto.BaseDetailInfo;
 import com.example.cut_optimization.dto.details.Detail;
+import com.example.cut_optimization.dto.details.Workpiece;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
@@ -85,5 +87,18 @@ public class FreeAreaSeeker {
             }
         }
         return Optional.empty();
+    }
+
+
+    public Optional<Workpiece> findSuitableWorkpieceBySquare(List<Detail> details, List<Workpiece> workpieces) {
+
+        details.sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
+        double allDetailsSquare = details.stream()
+                .mapToDouble(Detail::getSquare)
+                .sum();
+
+        return workpieces.stream()
+                .filter(w -> w.getSquare() > allDetailsSquare)
+                .min(Comparator.comparingDouble(Workpiece::getSquare));
     }
 }

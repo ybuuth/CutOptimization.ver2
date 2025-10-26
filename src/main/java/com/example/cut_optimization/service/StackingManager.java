@@ -4,7 +4,6 @@ import com.example.cut_optimization.dto.InitialDataOptimization;
 import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
-import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.stacking.StackingStrategy;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +94,7 @@ public class StackingManager {
     private boolean setupSingleWorkpieceForStacking(InitialDataOptimization initialData) {
         boolean hasError = false;
         //найдем минимально возможную по площади заготовку с площадью превышающей область всех деталей
-        Optional<Workpiece> workpiece = findSuitableWorkpieceBySquare(initialData.getWorkpieces(), initialData.getDetails());
+        Optional<Workpiece> workpiece = areaManager.findSuitableWorkpieceBySquare(initialData.getDetails(), initialData.getWorkpieces());
 
         if (workpiece.isEmpty()) {
             hasError = true;
@@ -113,17 +111,7 @@ public class StackingManager {
         return hasError;
     }
 
-    private Optional<Workpiece> findSuitableWorkpieceBySquare(List<Workpiece> workpieces, List<Detail> details) {
 
-        details.sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
-        double allDetailsSquare = details.stream()
-                .mapToDouble(Detail::getSquare)
-                .sum();
-
-        return workpieces.stream()
-                .filter(w -> w.getSquare() > allDetailsSquare)
-                .min(Comparator.comparingDouble(Workpiece::getSquare));
-    }
 
 
     public void finalOptimization(InitialDataOptimization initialData) {

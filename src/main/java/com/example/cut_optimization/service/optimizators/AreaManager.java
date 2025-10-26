@@ -532,4 +532,8 @@ public class AreaManager {
                 .findFirst()
                 .orElse(null);
     }
+
+    public Optional<Workpiece> findSuitableWorkpieceBySquare(List<Detail> details, List<Workpiece> workpieces) {
+        return freeAreaSeeker.findSuitableWorkpieceBySquare(details, workpieces);
+    }
 }
