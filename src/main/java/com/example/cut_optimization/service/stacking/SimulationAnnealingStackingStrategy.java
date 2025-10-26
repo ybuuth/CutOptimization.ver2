@@ -3,22 +3,19 @@ package com.example.cut_optimization.service.stacking;
 import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.StackingSequence;
 import com.example.cut_optimization.dto.TypeOfMaterial;
-import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.ResultEvaluator;
 import com.example.cut_optimization.service.TransitionManager;
 import com.example.cut_optimization.service.mutation.SequenceMutator;
+import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.temperatureLowStrategy.TemperatureLowStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service("simulatedAnnealingStackingStrategy")
@@ -38,7 +35,6 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
         this.transitionManager = transitionManager;
         this.resultEvaluator = resultEvaluator;
     }
-
 
     @Override
     public void stack(TypeOfMaterial.InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
@@ -63,7 +59,6 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
 
         ResultStacking currentResultStacking = new ResultStacking();
 
-        Map<Integer, CuttingLayout> wayOfLayingAreas = new HashMap<>();
         currentResultStacking.saveWayOfLayingAreas(0, initialData.getFreeAreas(), initialData.getOccupiedAreas());
 
         areaManager.stackDetailsWithStackingSequences(baseStackingSequences, initialData, currentResultStacking);
