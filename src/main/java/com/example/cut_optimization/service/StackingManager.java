@@ -17,15 +17,15 @@ import java.util.Optional;
 @Service
 public class StackingManager {
 
-    @Qualifier("greedyStackingStrategy")
     private final StackingStrategy greedyStackingStrategy;
-    @Qualifier("simulatedAnnealingStackingStrategy")
     private final StackingStrategy simulatedAnnealingStackingStrategy;
     private final ResultEvaluator resultEvaluator;
     private final AreaManager areaManager;
 
     @Autowired
-    public StackingManager(StackingStrategy greedyStackingStrategy, StackingStrategy simulatedAnnealingStackingStrategy, ResultEvaluator resultEvaluator, AreaManager areaManager) {
+    public StackingManager(@Qualifier("greedyStackingStrategy") StackingStrategy greedyStackingStrategy,
+                           @Qualifier("simulatedAnnealingStackingStrategy") StackingStrategy simulatedAnnealingStackingStrategy,
+                           ResultEvaluator resultEvaluator, AreaManager areaManager) {
         this.greedyStackingStrategy = greedyStackingStrategy;
         this.simulatedAnnealingStackingStrategy = simulatedAnnealingStackingStrategy;
         this.resultEvaluator = resultEvaluator;

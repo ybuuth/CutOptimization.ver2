@@ -12,6 +12,7 @@ import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.temperatureLowStrategy.TemperatureLowStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +24,15 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
 
     private final AreaManager areaManager;
     private final SequenceMutator sequenceMutator;
+
     private final TemperatureLowStrategy temperatureManager;
     private final TransitionManager transitionManager;
     private final ResultEvaluator resultEvaluator;
 
     @Autowired
-    public SimulationAnnealingStackingStrategy(AreaManager areaManager, SequenceMutator sequenceMutator, TemperatureLowStrategy temperatureManager, TransitionManager transitionManager, ResultEvaluator resultEvaluator) {
+    public SimulationAnnealingStackingStrategy(AreaManager areaManager, SequenceMutator sequenceMutator,
+                                               @Qualifier("inverseDependencyStrategyLowTemperature") TemperatureLowStrategy temperatureManager,
+                                               TransitionManager transitionManager, ResultEvaluator resultEvaluator) {
         this.areaManager = areaManager;
         this.sequenceMutator = sequenceMutator;
         this.temperatureManager = temperatureManager;
