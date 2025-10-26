@@ -1,5 +1,6 @@
 package com.example.cut_optimization.service;
 
+import com.example.cut_optimization.dto.AreaIdGenerator;
 import com.example.cut_optimization.dto.InitialDataOptimization;
 import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.details.Detail;

@@ -1,4 +1,4 @@
-package com.example.cut_optimization.service;
+package com.example.cut_optimization.dto;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

@@ -7,7 +7,6 @@ import com.example.cut_optimization.dto.baseDto.BaseDetailInfo;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.EndlessWorkpiece;
 import com.example.cut_optimization.dto.details.Workpiece;
-import com.example.cut_optimization.service.AreaIdGenerator;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

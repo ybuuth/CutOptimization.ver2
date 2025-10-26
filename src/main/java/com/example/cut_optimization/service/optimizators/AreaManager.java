@@ -7,7 +7,7 @@ import com.example.cut_optimization.dto.areas.SurroundingAreasInfo;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.dto.results.AreaPlacementResult;
-import com.example.cut_optimization.service.AreaIdGenerator;
+import com.example.cut_optimization.dto.AreaIdGenerator;
 import com.example.cut_optimization.service.FreeAreaSeeker;
 import com.example.cut_optimization.service.ResultEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
