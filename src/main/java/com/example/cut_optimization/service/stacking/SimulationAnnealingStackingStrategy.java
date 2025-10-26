@@ -112,5 +112,6 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
             counter++;
         }
         initialData.setBestResultStacking(bestResultStacking);
+        bestResultStacking.restoreWayOfLayingAreas(initialData.getDetails().size(), initialData);
     }
 }

@@ -70,7 +70,7 @@ public class OptimizeDispatcherService {
     }
 
     public ResultDataOptimization postProcessOnly(InitialDataOptimization initialData) {
-        initialData.finalOptimization();
+        stackingManager.finalOptimization(initialData);
         return getResultDataOptimization(initialData.getDetails(), initialData.getTypesOfMaterial(), List.of(initialData));
     }
 

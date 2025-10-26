@@ -83,6 +83,7 @@ public class StackingManager {
                 resultStackingInMultipleWorkpieces, initialData.isUsePartialSheets());
 
         initialData.setBestResultStacking(bestResultStacking);
+        bestResultStacking.restoreWayOfLayingAreas(initialData.getDetails().size(), initialData);
 
         return Optional.of(bestResultStacking);
     }
@@ -129,8 +130,8 @@ public class StackingManager {
         if (initialData.getFreeAreas().isEmpty()) {
             return;
         }
+
         ResultStacking bestResultStacking = initialData.getBestResultStacking();
-        bestResultStacking.restoreWayOfLayingAreas(initialData.getDetails().size(), initialData);
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
