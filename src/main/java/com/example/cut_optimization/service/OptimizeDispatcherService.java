@@ -29,24 +29,7 @@ public class OptimizeDispatcherService {
 
         // Разделим расчеты по каждому типу материала
         List<TypeOfMaterial> typesOfMaterial = initialData.getTypesOfMaterial();
-        List<InitialDataOptimization> dataOptimizationsByTypes = new ArrayList<>();
-
-
-        for (TypeOfMaterial typeOfMaterial : typesOfMaterial) {
-            InitialDataOptimization initialDataByType = new InitialDataOptimization();
-
-            initialDataByType.setDetails(initialData.filterByType(initialData.getDetails(), typeOfMaterial));
-            initialDataByType.setWorkpieces(initialData.filterByType(initialData.getWorkpieces(), typeOfMaterial));
-            initialDataByType.setEndlessWorkpieces(initialData.filterByType(initialData.getEndlessWorkpieces(), typeOfMaterial));
-
-            initialDataByType.setFreeAreas(new ArrayList<>());
-            initialDataByType.setOccupiedAreas(new ArrayList<>());
-            initialDataByType.setTypesOfMaterial(List.of(typeOfMaterial));
-
-            copyCommonSettings(initialData, initialDataByType);
-
-            dataOptimizationsByTypes.add(initialDataByType);
-        }
+        List<InitialDataOptimization> dataOptimizationsByTypes = splitByMaterialType(initialData, typesOfMaterial);
 
         for (InitialDataOptimization initialDataByType : dataOptimizationsByTypes) {
 
@@ -63,6 +46,27 @@ public class OptimizeDispatcherService {
             }
         }
         return getResultDataOptimization(initialData.getDetails(), initialData.getTypesOfMaterial(), dataOptimizationsByTypes);
+    }
+
+    private List<InitialDataOptimization> splitByMaterialType(InitialDataOptimization initialData, List<TypeOfMaterial> typesOfMaterial) {
+        List<InitialDataOptimization> dataOptimizationsByTypes = new ArrayList<>();
+
+        for (TypeOfMaterial typeOfMaterial : typesOfMaterial) {
+            InitialDataOptimization initialDataByType = new InitialDataOptimization();
+
+            initialDataByType.setDetails(initialData.filterByType(initialData.getDetails(), typeOfMaterial));
+            initialDataByType.setWorkpieces(initialData.filterByType(initialData.getWorkpieces(), typeOfMaterial));
+            initialDataByType.setEndlessWorkpieces(initialData.filterByType(initialData.getEndlessWorkpieces(), typeOfMaterial));
+
+            initialDataByType.setFreeAreas(new ArrayList<>());
+            initialDataByType.setOccupiedAreas(new ArrayList<>());
+            initialDataByType.setTypesOfMaterial(List.of(typeOfMaterial));
+
+            copyCommonSettings(initialData, initialDataByType);
+
+            dataOptimizationsByTypes.add(initialDataByType);
+        }
+        return dataOptimizationsByTypes;
     }
 
     public ResultDataOptimization postProcessOnly(InitialDataOptimization initialData) {
@@ -96,7 +100,7 @@ public class OptimizeDispatcherService {
                 List<Workpiece> orderedWorkpieces = initialDataByType.getWorkpieces().stream()
                             .filter(workpiece -> usedWorkpiecesIds.contains(workpiece.getId()))
                             .sorted(Comparator.comparing(Workpiece::getId))
-                            .collect(Collectors.toList());
+                            .toList();
 
                 result.getWorkpieces().addAll(orderedWorkpieces);
                 result.getFreeAreas().addAll((cuttingLayout.getFreeAreas()));
