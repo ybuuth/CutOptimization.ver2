@@ -47,5 +47,20 @@ class SequenceMutatorTest {
         List<StackingSequence> childSequences = sequenceMutator.mutate(parentSequences, false);
 
         assertNotEquals(parentSequences, childSequences);
+
+        parentSequences = List.of(new StackingSequence(1,1, false),
+                new StackingSequence(1,2, false));
+        childSequences = sequenceMutator.mutate(parentSequences, false);
+
+        assertNotEquals(parentSequences, childSequences);
+    }
+
+    @Test
+    void checkNotMutateIfSequencesSizeIsOne() {
+        List<StackingSequence> parentSequences = List.of(new StackingSequence(1,1, false));
+
+        List<StackingSequence> childSequences = sequenceMutator.mutate(parentSequences, true);
+
+        assertEquals(parentSequences, childSequences);
     }
 }

@@ -24,8 +24,13 @@ public class ResultStacking implements Cloneable {
     private int areaId;
     private boolean hasError;
 
+    @Builder.Default
     private List<StackingSequence> stackingSequences = new ArrayList<>();
+
+    @Builder.Default
     private StackingCoefficients stackingCoefficients = new StackingCoefficients();
+
+    @Builder.Default
     private Map<Integer, CuttingLayout> wayOfLayingAreas = new HashMap<>();
 
     public void saveWayOfLayingAreas(int key, List<FreeArea> freeAreas, List<OccupiedArea> occupiedAreas) {

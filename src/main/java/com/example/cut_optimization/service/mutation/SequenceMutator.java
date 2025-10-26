@@ -40,8 +40,14 @@ public class SequenceMutator implements Mutatable {
                 .collect(Collectors.toList());
 
         for (int i = 0; i < sequenceMutationFactor; i++) {
+
             int k = random.nextInt(stackingSequencesClone.size());
             int j = random.nextInt(stackingSequencesClone.size());
+
+            if (k == j && stackingSequencesClone.size() > 1) {
+                i --;
+                continue;
+            }
             Collections.swap(stackingSequencesClone, k, j);
 
             if (isDisableRotation) {

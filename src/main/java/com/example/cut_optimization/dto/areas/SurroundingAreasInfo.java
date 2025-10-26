@@ -18,9 +18,17 @@ public class SurroundingAreasInfo {
     private boolean freeAreaOnBottom;
     private boolean isAtRightEdgeOfWorkpiece;
     private boolean isAtBottomEdgeOfWorkpiece;
+
+    @Builder.Default
     private List<FreeArea> freeAreasOnRight = new ArrayList<>();
+
+    @Builder.Default
     private List<FreeArea> freeAreasOnBottom = new ArrayList<>();
+
+    @Builder.Default
     private List<OccupiedArea> occupiedAreasOnRight = new ArrayList<>();
+
+    @Builder.Default
     private List<OccupiedArea> occupiedAreasOnBottom = new ArrayList<>();
 
 }
