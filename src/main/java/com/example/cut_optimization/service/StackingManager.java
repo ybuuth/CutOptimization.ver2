@@ -111,9 +111,6 @@ public class StackingManager {
         return hasError;
     }
 
-
-
-
     public void finalOptimization(InitialDataOptimization initialData) {
         if (initialData.getFreeAreas().isEmpty()) {
             return;
@@ -122,7 +119,6 @@ public class StackingManager {
         ResultStacking bestResultStacking = initialData.getBestResultStacking();
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
-        List<FreeArea> freeAreas = initialData.getFreeAreas();
 
         occupiedAreas.sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
 
