@@ -34,7 +34,7 @@ public class StackingManager {
         this.areaManager = areaManager;
     }
 
-    public Optional<ResultStacking> performInitialLaying(InitialDataOptimization.InitialDataOptimization initialData) {
+    public Optional<ResultStacking> performInitialLaying(InitialDataOptimization initialData) {
 
         ResultStacking resultStackingInOneWorkpiece = new ResultStacking();
 
@@ -87,12 +87,12 @@ public class StackingManager {
         return Optional.of(bestResultStacking);
     }
 
-    public Optional<ResultStacking> optimizeInitialLaying(InitialDataOptimization.InitialDataOptimization initialData) {
+    public Optional<ResultStacking> optimizeInitialLaying(InitialDataOptimization initialData) {
         simulatedAnnealingStackingStrategy.stack(initialData);
         return Optional.of(initialData.getBestResultStacking());
     }
 
-    private boolean setupSingleWorkpieceForStacking(InitialDataOptimization.InitialDataOptimization initialData) {
+    private boolean setupSingleWorkpieceForStacking(InitialDataOptimization initialData) {
         boolean hasError = false;
         //найдем минимально возможную по площади заготовку с площадью превышающей область всех деталей
         Optional<Workpiece> workpiece = findSuitableWorkpieceBySquare(initialData.getWorkpieces(), initialData.getDetails());
@@ -125,7 +125,7 @@ public class StackingManager {
     }
 
 
-    public void finalOptimization(InitialDataOptimization.InitialDataOptimization initialData) {
+    public void finalOptimization(InitialDataOptimization initialData) {
         if (initialData.getFreeAreas().isEmpty()) {
             return;
         }

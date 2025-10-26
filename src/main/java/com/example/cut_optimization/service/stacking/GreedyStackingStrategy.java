@@ -26,7 +26,7 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization.InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
 
         ResultStacking bestResultStacking = null;
         ResultStacking currentResultStacking = new ResultStacking();
@@ -141,6 +141,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {}
+    public void stack(InitialDataOptimization initialDataOptimization) {}
 
 }

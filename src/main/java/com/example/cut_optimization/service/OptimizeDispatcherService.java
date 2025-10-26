@@ -1,9 +1,6 @@
 package com.example.cut_optimization.service;
 
-import com.example.cut_optimization.dto.InitialDataOptimization;
-import com.example.cut_optimization.dto.ResultDataOptimization;
-import com.example.cut_optimization.dto.ResultStacking;
-import com.example.cut_optimization.dto.TypeOfMaterial;
+import com.example.cut_optimization.dto.*;
 import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.baseDto.BaseArea;
 import com.example.cut_optimization.dto.details.Detail;
@@ -26,17 +23,17 @@ public class OptimizeDispatcherService {
         this.stackingManager = stackingManager;
     }
 
-    public ResultDataOptimization optimize(InitialDataOptimization.InitialDataOptimization initialData) {
+    public ResultDataOptimization optimize(InitialDataOptimization initialData) {
 
         PreliminaryChecker.initializePreliminarySettings(initialData);
 
         // Разделим расчеты по каждому типу материала
         List<TypeOfMaterial> typesOfMaterial = initialData.getTypesOfMaterial();
-        List<InitialDataOptimization.InitialDataOptimization> dataOptimizationsByTypes = new ArrayList<>();
+        List<InitialDataOptimization> dataOptimizationsByTypes = new ArrayList<>();
 
 
         for (TypeOfMaterial typeOfMaterial : typesOfMaterial) {
-            InitialDataOptimization.InitialDataOptimization initialDataByType = new InitialDataOptimization.InitialDataOptimization();
+            InitialDataOptimization initialDataByType = new InitialDataOptimization();
 
             initialDataByType.setDetails(initialData.filterByType(initialData.getDetails(), typeOfMaterial));
             initialDataByType.setWorkpieces(initialData.filterByType(initialData.getWorkpieces(), typeOfMaterial));
@@ -51,7 +48,7 @@ public class OptimizeDispatcherService {
             dataOptimizationsByTypes.add(initialDataByType);
         }
 
-        for (InitialDataOptimization.InitialDataOptimization initialDataByType : dataOptimizationsByTypes) {
+        for (InitialDataOptimization initialDataByType : dataOptimizationsByTypes) {
 
             Optional<ResultStacking> optionalResultStacking = stackingManager.performInitialLaying(initialDataByType);
 
@@ -68,12 +65,12 @@ public class OptimizeDispatcherService {
         return getResultDataOptimization(initialData.getDetails(), initialData.getTypesOfMaterial(), dataOptimizationsByTypes);
     }
 
-    public ResultDataOptimization postProcessOnly(InitialDataOptimization.InitialDataOptimization initialData) {
+    public ResultDataOptimization postProcessOnly(InitialDataOptimization initialData) {
         initialData.finalOptimization();
         return getResultDataOptimization(initialData.getDetails(), initialData.getTypesOfMaterial(), List.of(initialData));
     }
 
-    public ResultDataOptimization enlarge(InitialDataOptimization.InitialDataOptimization initialData) {
+    public ResultDataOptimization enlarge(InitialDataOptimization initialData) {
         initialData.enlargeAndCutOffLowerAreaVertically();
         ResultStacking resultStacking = new ResultStacking();
         CuttingLayout cuttingLayout = new CuttingLayout();
@@ -86,10 +83,10 @@ public class OptimizeDispatcherService {
     }
 
     private ResultDataOptimization getResultDataOptimization(List<Detail> details, List<TypeOfMaterial> typeOfMaterials,
-                                                                    List<InitialDataOptimization.InitialDataOptimization> dataOptimizationsByTypes) {
+                                                                    List<InitialDataOptimization> dataOptimizationsByTypes) {
         ResultDataOptimization result = new ResultDataOptimization();
 
-        for (InitialDataOptimization.InitialDataOptimization initialDataByType : dataOptimizationsByTypes) {
+        for (InitialDataOptimization initialDataByType : dataOptimizationsByTypes) {
             CuttingLayout cuttingLayout = initialDataByType.getBestResultStacking().getWayOfLayingAreas().get(initialDataByType.getDetails().size());
             if (cuttingLayout != null) {
 
@@ -111,7 +108,7 @@ public class OptimizeDispatcherService {
         return result;
     }
 
-    private void copyCommonSettings(InitialDataOptimization.InitialDataOptimization initialData, InitialDataOptimization.InitialDataOptimization initialDataByType) {
+    private void copyCommonSettings(InitialDataOptimization initialData, InitialDataOptimization initialDataByType) {
         initialDataByType.setInitialTemperature(initialData.getInitialTemperature());
         initialDataByType.setDisableRotation(initialData.isDisableRotation());
         initialDataByType.setSawCutWidth(initialData.getSawCutWidth());

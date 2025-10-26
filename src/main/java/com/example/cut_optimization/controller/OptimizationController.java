@@ -29,7 +29,7 @@ public class OptimizationController {
     @PostMapping
     public ResponseEntity<ResultDataOptimization> optimization(@RequestBody String body) throws JsonProcessingException {
         log.info("body: {}", body);
-        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
+        InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.optimize(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);
@@ -40,7 +40,7 @@ public class OptimizationController {
 
     @PostMapping("/postprocess")
     public ResponseEntity<ResultDataOptimization> postprocess(@RequestBody String body) throws JsonProcessingException {
-        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
+        InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.postProcessOnly(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);
@@ -51,7 +51,7 @@ public class OptimizationController {
 
     @PostMapping("/enlarge")
     public ResponseEntity<ResultDataOptimization> enlarge (@RequestBody String body) throws JsonProcessingException {
-        InitialDataOptimization.InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.InitialDataOptimization.class);
+        InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.enlarge(initialDataOptimization);
             return ResponseEntity.ok(resultDataOptimization);

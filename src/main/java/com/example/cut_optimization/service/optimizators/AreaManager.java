@@ -34,7 +34,7 @@ public class AreaManager {
         return freeAreaSeeker.getFreeAreasSuitableForDetail(detail, freeAreas, isDisableRotation);
     }
 
-    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, InitialDataOptimization.InitialDataOptimization initialData) {
+    public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, InitialDataOptimization initialData) {
 
         setDetailAlongArea(detail, freeArea);
 
@@ -47,7 +47,7 @@ public class AreaManager {
     }
 
     public void stackDetailIntoFreeArea(Detail detail, FreeArea freeArea,
-                                                                 InitialDataOptimization.InitialDataOptimization initialData) {
+                                                                 InitialDataOptimization initialData) {
 
         boolean canPlace = initialData.isDisableRotation() ? freeArea.canStackAlong(detail) : freeArea.canStack(detail);
         if (!canPlace) {
@@ -160,7 +160,7 @@ public class AreaManager {
                 .collect(Collectors.toList());
     }
 
-    private void updateInitialData(InitialDataOptimization.InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
+    private void updateInitialData(InitialDataOptimization initialData, AreaPlacementResult areaPlacementResult) {
 
         initialData.getFreeAreas().remove(areaPlacementResult.getAreaToRemove());
 
@@ -224,7 +224,7 @@ public class AreaManager {
     }
 
     public void stackDetailsWithStackingSequences(List<StackingSequence> stackingSequences,
-                                                  InitialDataOptimization.InitialDataOptimization initialData,
+                                                  InitialDataOptimization initialData,
                                                   ResultStacking currentResultStacking) {
 
         PossibleFreeAreas possibleFreeAreas;
@@ -268,7 +268,7 @@ public class AreaManager {
         enlargeAndCutOffLowerAreaVertically(initialData.getWorkpieces(), initialData.getFreeAreas(), initialData.getOccupiedAreas(), initialData.getSawCutWidth());
     }
 
-    private void addAllFreeAreasFromPossibleFreeAreas(InitialDataOptimization.InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
+    private void addAllFreeAreasFromPossibleFreeAreas(InitialDataOptimization initialData, PossibleFreeAreas possibleFreeAreas) {
 
         initialData.getFreeAreas().clear();
 
@@ -330,7 +330,7 @@ public class AreaManager {
      * Пытается переместить занятую область в свободную с меньшей площадью,
      * чтобы улучшить коэффициент заполнения.
      */
-    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, InitialDataOptimization.InitialDataOptimization initialData, ResultStacking bestResultStacking) {
+    public boolean moveToSmallerFreeArea(OccupiedArea occupiedArea, Workpiece currentWorkpiece, InitialDataOptimization initialData, ResultStacking bestResultStacking) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -407,7 +407,7 @@ public class AreaManager {
 
     private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea,
                                                          Workpiece currentWorkpiece,
-                                                         InitialDataOptimization.InitialDataOptimization initialData) {
+                                                         InitialDataOptimization initialData) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();
@@ -483,7 +483,7 @@ public class AreaManager {
         }
     }
 
-    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, InitialDataOptimization.InitialDataOptimization initialData) {
+    private Optional<FreeArea> createFreeArea(OccupiedArea occupiedArea, SurroundingAreasInfo surroundingAreasInfo, InitialDataOptimization initialData) {
 
         double sawCutWidth = initialData.getSawCutWidth();
         AreaIdGenerator areaIdGenerator = initialData.getAreaIdGenerator();

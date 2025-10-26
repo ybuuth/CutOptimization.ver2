@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class PreliminaryChecker {
 
-    public void initializePreliminarySettings(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    public void initializePreliminarySettings(InitialDataOptimization initialDataOptimization) {
         checkNotEmptyDetails(initialDataOptimization);
         checkNotEmptyWorkpieces(initialDataOptimization);
         checkNotEmptyTemperature(initialDataOptimization);
@@ -30,19 +30,19 @@ public class PreliminaryChecker {
         initAreaIdGenerator(initialDataOptimization);
     }
 
-    private static void initAreaIdGenerator(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void initAreaIdGenerator(InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getAreaIdGenerator() == null) {
             initialDataOptimization.setAreaIdGenerator(new AreaIdGenerator());
         }
     }
 
-    private static void initFreeAreaAndOccupiedArea(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void initFreeAreaAndOccupiedArea(InitialDataOptimization initialDataOptimization) {
         initialDataOptimization.setFreeAreas(new ArrayList<>());
         initialDataOptimization.setOccupiedAreas(new ArrayList<>());
     }
 
 
-    private static void checkSizeOfDetailsDotNotExceedSizeOfWorkpieces(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkSizeOfDetailsDotNotExceedSizeOfWorkpieces(InitialDataOptimization initialDataOptimization) {
 
         for (TypeOfMaterial typeOfMaterial : initialDataOptimization.getTypesOfMaterial()) {
 
@@ -96,7 +96,7 @@ public class PreliminaryChecker {
         }
     }
 
-    private static void fillTypesOfMaterial(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void fillTypesOfMaterial(InitialDataOptimization initialDataOptimization) {
 
         if (initialDataOptimization.getTypesOfMaterial() == null || initialDataOptimization.getTypesOfMaterial().isEmpty()) {
 
@@ -141,13 +141,13 @@ public class PreliminaryChecker {
         }
     }
 
-    private static void checkNotEmptyEndlessWorkpieces(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyEndlessWorkpieces(InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getEndlessWorkpieces() == null) {
             initialDataOptimization.setEndlessWorkpieces(new ArrayList<>());
         }
     }
 
-    private static void checkWorkpicesSquareMoreThanDetailsSquare(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkWorkpicesSquareMoreThanDetailsSquare(InitialDataOptimization initialDataOptimization) {
 
         for (TypeOfMaterial typeOfMaterial : initialDataOptimization.getTypesOfMaterial()) {
 
@@ -170,25 +170,25 @@ public class PreliminaryChecker {
 
     }
 
-    private static void checkNotEmptyTemperature(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyTemperature(InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getInitialTemperature() == 0) {
             throw new CommonException("Initial temperature can't be zero", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private static void checkNotEmptyWorkpieces(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyWorkpieces(InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getWorkpieces().isEmpty() && initialDataOptimization.getEndlessWorkpieces().isEmpty()) {
             throw new CommonException("Must be at least one workpiece or endless workpiece", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private static void checkNotEmptyDetails(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private static void checkNotEmptyDetails(InitialDataOptimization initialDataOptimization) {
         if (initialDataOptimization.getDetails().isEmpty()) {
             throw new CommonException("Must be at least one detail", HttpStatus.BAD_REQUEST);
         }
     }
 
-    private void setDetailsAndWorkpiecesAmountAsOneAndSetId(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private void setDetailsAndWorkpiecesAmountAsOneAndSetId(InitialDataOptimization initialDataOptimization) {
         List<Detail> newDetails = new ArrayList<>();
 
         AtomicInteger idCounter = new AtomicInteger(1);
@@ -229,7 +229,7 @@ public class PreliminaryChecker {
         }
     }
 
-    private void calculateArea(InitialDataOptimization.InitialDataOptimization initialDataOptimization) {
+    private void calculateArea(InitialDataOptimization initialDataOptimization) {
         initialDataOptimization.calculateAllSquares();
     }
 }

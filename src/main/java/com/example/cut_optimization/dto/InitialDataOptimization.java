@@ -116,4 +116,3 @@ public class InitialDataOptimization {
         setOccupiedAreas(new ArrayList<>(cuttingLayout.getOccupiedAreas()));
     }
 }
-

@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class PreliminaryCheckerTest {
 
-    private static InitialDataOptimization.InitialDataOptimization initialDataOptimization;
+    private static InitialDataOptimization initialDataOptimization;
 
     @BeforeEach
     void beforeEach() {
-        initialDataOptimization = new InitialDataOptimization.InitialDataOptimization();
+        initialDataOptimization = new InitialDataOptimization();
         initialDataOptimization.setInitialTemperature(10);
         List<Detail> details = new ArrayList<>();
         Detail detail = new Detail();
