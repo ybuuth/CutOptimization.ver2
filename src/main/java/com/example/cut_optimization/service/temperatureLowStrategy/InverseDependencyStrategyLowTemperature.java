@@ -17,4 +17,9 @@ public class InverseDependencyStrategyLowTemperature implements TemperatureLowSt
         return (int) (initialTemperature * DECREASE_FACTOR / minimumTemperature);
     }
 
+    @Override
+    public double getMinimumTemperature() {
+        return 0.00099;
+    }
+
 }

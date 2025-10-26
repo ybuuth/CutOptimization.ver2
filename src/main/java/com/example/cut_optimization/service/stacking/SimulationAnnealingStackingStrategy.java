@@ -56,7 +56,7 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
         initialData.getFreeAreas().clear();
         initialData.getOccupiedAreas().clear();
 
-        double tmin = 0.001;
+        double tmin =temperatureManager.getMinimumTemperature();
         int maxCounter = temperatureManager.getMaxCounter(initialData.getInitialTemperature(), tmin);
         int coolingPhaseStart = (int) (maxCounter * 0.67);
         int counter = 1;
@@ -92,7 +92,7 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
             }
 
             double currentTemperature = temperatureManager.lowTemperature(initialData.getInitialTemperature(), counter);
-            if (currentTemperature < tmin) {
+            if (currentTemperature <= tmin) {
                 break;
             }
 

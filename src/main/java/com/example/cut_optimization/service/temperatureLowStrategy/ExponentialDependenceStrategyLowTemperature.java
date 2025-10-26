@@ -16,4 +16,9 @@ public class ExponentialDependenceStrategyLowTemperature implements TemperatureL
     public int getMaxCounter(int initialTemperature, double minimumTemperature) {
         return Integer.MAX_VALUE;
     }
+
+    @Override
+    public double getMinimumTemperature() {
+        return 0;
+    }
 }
