@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>cut-optimization</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<name>cut-optimization</name>
 	<description>cut optimization integration 1c</description>
 	<url/>

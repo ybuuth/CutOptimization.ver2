@@ -1,14 +1,14 @@
-package com.example.cut_optimization.optimizators;
+package com.example.cut_optimization.service.optimizators;
 
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Workpiece;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class AreaMerger {
 
     public boolean mergeVerticalAdjacentFreeAreas(double sawCutWidth, FreeArea freeArea, List<FreeArea> freeAreasByCurrentWorkpiece, List<FreeArea> freeAreasToRemove, boolean hasEnlarge) {

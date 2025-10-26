@@ -1,4 +1,4 @@
-package com.example.cut_optimization.optimizators;
+package com.example.cut_optimization.service.optimizators;
 
 import com.example.cut_optimization.dto.PossibleFreeAreas;
 import com.example.cut_optimization.dto.ResultStacking;
@@ -11,6 +11,7 @@ import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.dto.results.AreaPlacementResult;
 import com.example.cut_optimization.service.AreaIdGenerator;
+import com.example.cut_optimization.service.FreeAreaSeeker;
 import com.example.cut_optimization.service.ResultEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,22 +24,17 @@ public class AreaManager {
 
     private final ResultEvaluator resultEvaluator;
     private final AreaMerger areaMerger;
+    private final FreeAreaSeeker freeAreaSeeker;
 
     @Autowired
-    public AreaManager(ResultEvaluator resultEvaluator, AreaMerger areaMerger) {
+    public AreaManager(ResultEvaluator resultEvaluator, AreaMerger areaMerger, FreeAreaSeeker freeAreaSeeker) {
         this.resultEvaluator = resultEvaluator;
         this.areaMerger = areaMerger;
+        this.freeAreaSeeker = freeAreaSeeker;
     }
 
     public List<FreeArea> getFreeAreasSuitableForDetail(Detail detail, List<FreeArea> freeAreas, boolean isDisableRotation) {
-        return freeAreas.stream()
-                .filter(freeArea ->
-                        isDisableRotation ?
-                                freeArea.canStackAlong(detail) :
-                                freeArea.canStack(detail)
-
-                )
-                .collect(Collectors.toList());
+        return freeAreaSeeker.getFreeAreasSuitableForDetail(detail, freeAreas, isDisableRotation);
     }
 
     public void stackDetailIntoFreeAreaCompactlyWithRotation(Detail detail, FreeArea freeArea, TypeOfMaterial.InitialDataOptimization initialData) {
@@ -200,7 +196,6 @@ public class AreaManager {
         OccupiedArea occupiedArea = new OccupiedArea(detail, freeArea, areaIdGenerator.nextAreaId(), false);
 
         occupiedArea.setDetailId(detail.getId());
-
         occupiedArea.setRotated(detail.isRotated());
 
         AreaPlacementResult result = AreaPlacementResult.builder()
@@ -259,7 +254,7 @@ public class AreaManager {
                 detail.rotate();
             }
 
-            Optional<FreeArea> optionalFreeArea = getSuitableFreeArea(detail, possibleFreeAreas);
+            Optional<FreeArea> optionalFreeArea = freeAreaSeeker.getSuitableFreeArea(detail, possibleFreeAreas);
             if (optionalFreeArea.isEmpty()) {
                 currentResultStacking.setHasError(true);
                 return;
@@ -353,7 +348,7 @@ public class AreaManager {
         }
 
         Detail detail = occupiedArea.toDetail();
-        List<FreeArea> freeAreasSuitableForDetail = getFreeAreasSuitableForDetail(detail, freeAreas, disableRotation);
+        List<FreeArea> freeAreasSuitableForDetail = freeAreaSeeker.getFreeAreasSuitableForDetail(detail, freeAreas, disableRotation);
 
         removeSurroundingAreasFromSuitableAreas(freeAreasSuitableForDetail, surroundingAreasInfo);
 
@@ -413,44 +408,9 @@ public class AreaManager {
         return true;
     }
 
-    private Optional<FreeArea> getSuitableFreeArea(Detail detail, PossibleFreeAreas possibleFreeAreas) {
-        //Среди возможных областей в первую очередь ищем область заготовки, на которую уже начата укладка, во вторую область той же заготовки где еще нет укладок, в третью - области других заготовок
-        // т.к. области складываются стеком, нужно идти обратным перебором
-        ListIterator<FreeArea> freeAreaListIterator = possibleFreeAreas.getFreeAreasHighPriority()
-                .listIterator(possibleFreeAreas.getFreeAreasHighPriority().size());
-        while (freeAreaListIterator.hasPrevious()) {
-            FreeArea freeArea = freeAreaListIterator.previous();
-            if (freeArea.canStackAlong(detail)) {
-                freeAreaListIterator.remove();
-                return Optional.of(freeArea);
-            }
-        }
-
-        ListIterator<FreeArea> freeAreaListIteratorMedium = possibleFreeAreas.getFreeAreasMediumPriority()
-                .listIterator(possibleFreeAreas.getFreeAreasMediumPriority().size());
-        while (freeAreaListIteratorMedium.hasPrevious()) {
-            FreeArea freeArea = freeAreaListIteratorMedium.previous();
-            if (freeArea.canStackAlong(detail)) {
-                possibleFreeAreas.getFreeAreasHighPriority().clear();
-                freeAreaListIteratorMedium.remove();
-                return Optional.of(freeArea);
-            }
-        }
-
-        ListIterator<FreeArea> freeAreaListIteratorLow = possibleFreeAreas.getFreeAreasLowPriority().listIterator();
-        while (freeAreaListIteratorLow.hasNext()) {
-            FreeArea freeArea = freeAreaListIteratorLow.next();
-            if (freeArea.canStackAlong(detail)) {
-                possibleFreeAreas.getFreeAreasHighPriority().clear();
-                possibleFreeAreas.getFreeAreasMediumPriority().clear();
-                freeAreaListIteratorLow.remove();
-                return Optional.of(freeArea);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea, Workpiece currentWorkpiece, TypeOfMaterial.InitialDataOptimization initialData) {
+    private SurroundingAreasInfo getSurroundingAreasInfo(OccupiedArea occupiedArea,
+                                                         Workpiece currentWorkpiece,
+                                                         TypeOfMaterial.InitialDataOptimization initialData) {
 
         List<OccupiedArea> occupiedAreas = initialData.getOccupiedAreas();
         List<FreeArea> freeAreas = initialData.getFreeAreas();

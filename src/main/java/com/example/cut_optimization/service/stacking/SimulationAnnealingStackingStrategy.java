@@ -6,7 +6,7 @@ import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.optimizators.AreaManager;
+import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.ResultEvaluator;
 import com.example.cut_optimization.service.TransitionManager;
 import com.example.cut_optimization.service.mutation.SequenceMutator;

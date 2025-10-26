@@ -1,9 +1,9 @@
 package com.example.cut_optimization.service;
 
 import com.example.cut_optimization.dto.ResultStacking;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class TransitionManager {
 
     public boolean allowTransition(int counter, int coolingPhaseStart,

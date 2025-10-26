@@ -4,9 +4,8 @@ import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.TypeOfMaterial;
 import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
-import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.details.Detail;
-import com.example.cut_optimization.optimizators.AreaManager;
+import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.ResultEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,10 +30,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
 
         ResultStacking bestResultStacking = null;
         ResultStacking currentResultStacking = new ResultStacking();
-        Map<Integer, CuttingLayout> wayOfLayingAreas = currentResultStacking.getWayOfLayingAreas();
-        if (wayOfLayingAreas == null) {
-            wayOfLayingAreas = new HashMap<>();
-        }
 
         //будем делать несколько проходов.
         //1 цикл - вращаем детали только при необходимости (если без вращения не помещаются в область)

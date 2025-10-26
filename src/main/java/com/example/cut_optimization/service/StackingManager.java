@@ -6,7 +6,7 @@ import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
-import com.example.cut_optimization.optimizators.AreaManager;
+import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.stacking.StackingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

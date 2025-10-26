@@ -1,8 +1,8 @@
 package com.example.cut_optimization.service.temperatureLowStrategy;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ModerateTemperatureLowStrategy implements TemperatureLowStrategy{
 
     private final double DECREASE_FACTOR = 0.15;
