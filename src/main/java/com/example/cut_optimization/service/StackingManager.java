@@ -37,30 +37,18 @@ public class StackingManager {
 
     public Optional<ResultStacking> performInitialLaying(InitialDataOptimization initialData) {
 
-        ResultStacking resultStackingInOneWorkpiece = new ResultStacking();
-
         if (initialData.isUsePartialSheets()) {
 
             initialData.getWorkpieces().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? 1 : -1);
             initialData.getDetails().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
-            //resultStackingInOneWorkpiece.setHasError(true);
 
         } else {
-            //initialData.getWorkpieces().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
-            //initialData.getDetails().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
-//
+
             boolean canStack = setupSingleWorkpieceForStacking(initialData);
             if (canStack) {
-
-                boolean isStackingDetailsIntoOneWorkpiece = true;
-
                 greedyStackingStrategy.stack(initialData);
-
-                resultStackingInOneWorkpiece = initialData.getBestResultStacking();
-
-            } else {
-                resultStackingInOneWorkpiece.setHasError(true);
             }
+
         }
 
         //наполнить свободные области из заготовок
@@ -76,12 +64,6 @@ public class StackingManager {
 
         greedyStackingStrategy.stack(initialData);
 
-//        ResultStacking resultStackingInMultipleWorkpieces = initialData.getBestResultStacking();
-//
-//        if (resultStackingInOneWorkpiece.isHasError() && resultStackingInMultipleWorkpieces == null) {
-//            return Optional.empty();
-//        }
-//
         ResultStacking bestResultStacking = initialData.getBestResultStacking();
         if (bestResultStacking.isHasError()) {
             return Optional.empty();
