@@ -28,7 +28,7 @@ public class OptimizationController {
 
     @PostMapping
     public ResponseEntity<ResultDataOptimization> optimization(@RequestBody String body) throws JsonProcessingException {
-        log.info("body: {}", body);
+        //log.info("body: {}", body);
         InitialDataOptimization initialDataOptimization = objectMapper.readValue(body, InitialDataOptimization.class);
         try {
             ResultDataOptimization resultDataOptimization = optimizeDispatcherService.optimize(initialDataOptimization);

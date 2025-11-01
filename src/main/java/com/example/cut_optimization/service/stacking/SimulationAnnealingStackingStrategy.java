@@ -5,10 +5,10 @@ import com.example.cut_optimization.dto.ResultStacking;
 import com.example.cut_optimization.dto.StackingSequence;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
-import com.example.cut_optimization.service.ResultEvaluator;
 import com.example.cut_optimization.service.TransitionManager;
 import com.example.cut_optimization.service.mutation.SequenceMutator;
 import com.example.cut_optimization.service.optimizators.AreaManager;
+import com.example.cut_optimization.service.resultEvaluator.Evaluatable;
 import com.example.cut_optimization.service.temperatureLowStrategy.TemperatureLowStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +27,17 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
 
     private final TemperatureLowStrategy temperatureManager;
     private final TransitionManager transitionManager;
-    private final ResultEvaluator resultEvaluator;
+    private final Evaluatable evaluator;
 
     @Autowired
     public SimulationAnnealingStackingStrategy(AreaManager areaManager, SequenceMutator sequenceMutator,
                                                @Qualifier("inverseDependencyStrategyLowTemperature") TemperatureLowStrategy temperatureManager,
-                                               TransitionManager transitionManager, ResultEvaluator resultEvaluator) {
+                                               TransitionManager transitionManager, Evaluatable evaluator) {
         this.areaManager = areaManager;
         this.sequenceMutator = sequenceMutator;
         this.temperatureManager = temperatureManager;
         this.transitionManager = transitionManager;
-        this.resultEvaluator = resultEvaluator;
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
             if (allowToNewTransition) {
                 currentResultStacking.saveWayOfLayingAreas(initialData.getDetails().size(), initialData.getFreeAreas(), initialData.getOccupiedAreas());
 
-                bestResultStacking = resultEvaluator.compareAndUpdateTopResultWithCurrentResult(bestResultStacking,
+                bestResultStacking = evaluator.evaluate(bestResultStacking,
                         currentResultStacking, initialData.isUsePartialSheets());
 
                 baseStackingSequences = currentStackingSequences;

@@ -6,7 +6,7 @@ import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.service.optimizators.AreaManager;
-import com.example.cut_optimization.service.ResultEvaluator;
+import com.example.cut_optimization.service.resultEvaluator.Evaluatable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class GreedyStackingStrategy implements StackingStrategy {
 
     private final AreaManager areaManager;
-    private final ResultEvaluator resultEvaluator;
+    private final Evaluatable resultEvaluator;
 
     @Autowired
-    public GreedyStackingStrategy(AreaManager areaManager, ResultEvaluator resultEvaluator) {
+    public GreedyStackingStrategy(AreaManager areaManager, Evaluatable resultEvaluator) {
         this.areaManager = areaManager;
         this.resultEvaluator = resultEvaluator;
     }
@@ -60,17 +60,20 @@ public class GreedyStackingStrategy implements StackingStrategy {
 
                         areaManager.stackDetailIntoFreeArea(detail, freeArea, initialData);
                         currentResultStackingForDetail.calculateStackingCoefficientsByDetail(detail, freeArea, initialData.getFreeAreas(), initialData.getWorkpieces());
+                        currentResultStackingForDetail.calculateStackingCoefficients(initialData.getOccupiedAreas(),
+                                initialData.getWorkpieces(), initialData.getFreeAreas());
 
                     } else if (counter[i] == 2) {
 
                         areaManager.stackDetailIntoFreeAreaCompactlyWithRotation(detail, freeArea, initialData);
                         currentResultStackingForDetail.calculateStackingCoefficientsByDetail(detail, freeArea, initialData.getFreeAreas(), initialData.getWorkpieces());
-
+                        currentResultStackingForDetail.calculateStackingCoefficients(initialData.getOccupiedAreas(), initialData.getWorkpieces(),
+                                initialData.getFreeAreas());
                     }
 
-                    bestResultStackingForDetail = resultEvaluator.evaluateAndUpdateTopResultByDetail(bestResultStackingForDetail, currentResultStackingForDetail, isStackingDetailsIntoOneWorkpiece);
+                    bestResultStackingForDetail = resultEvaluator.evaluate(bestResultStackingForDetail, currentResultStackingForDetail,
+                            initialData.isUsePartialSheets());
 
-                    bestResultStackingForDetail.setAreaId(freeArea.getAreaId());
                 }
                 if (bestResultStackingForDetail == null) {
 
@@ -127,8 +130,7 @@ public class GreedyStackingStrategy implements StackingStrategy {
             currentResultStacking.calculateStackingCoefficients(initialData.getOccupiedAreas(), initialData.getWorkpieces(), initialData.getFreeAreas());
             currentResultStacking.saveWayOfLayingAreas(initialData.getDetails().size(), initialData.getFreeAreas(),initialData.getOccupiedAreas());
 
-            bestResultStacking = resultEvaluator.compareAndUpdateTopResultWithCurrentResult(bestResultStacking,
-                    currentResultStacking, initialData.isUsePartialSheets());
+            bestResultStacking = resultEvaluator.evaluate(bestResultStacking, currentResultStacking, initialData.isUsePartialSheets());
 
             currentResultStacking.restoreWayOfLayingAreas(0, initialData);
         }

@@ -6,7 +6,9 @@ import com.example.cut_optimization.dto.areas.FreeArea;
 import com.example.cut_optimization.dto.areas.OccupiedArea;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.service.optimizators.AreaManager;
+import com.example.cut_optimization.service.resultEvaluator.Evaluatable;
 import com.example.cut_optimization.service.stacking.StackingStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -14,22 +16,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class StackingManager {
 
     private final StackingStrategy greedyStackingStrategy;
     private final StackingStrategy simulatedAnnealingStackingStrategy;
-    private final ResultEvaluator resultEvaluator;
     private final AreaManager areaManager;
+    private final Evaluatable evaluator;
 
     @Autowired
     public StackingManager(@Qualifier("greedyStackingStrategy") StackingStrategy greedyStackingStrategy,
                            @Qualifier("simulatedAnnealingStackingStrategy") StackingStrategy simulatedAnnealingStackingStrategy,
-                           ResultEvaluator resultEvaluator, AreaManager areaManager) {
+                           AreaManager areaManager, Evaluatable evaluator) {
         this.greedyStackingStrategy = greedyStackingStrategy;
         this.simulatedAnnealingStackingStrategy = simulatedAnnealingStackingStrategy;
-        this.resultEvaluator = resultEvaluator;
         this.areaManager = areaManager;
+        this.evaluator = evaluator;
     }
 
     public Optional<ResultStacking> performInitialLaying(InitialDataOptimization initialData) {
@@ -77,8 +80,8 @@ public class StackingManager {
             return Optional.empty();
         }
 
-        ResultStacking bestResultStacking = resultEvaluator.selectBestStackingResultBetweenOneWorkpieceResultAndMultipleWorkpieceResult(resultStackingInOneWorkpiece,
-                resultStackingInMultipleWorkpieces, initialData.isUsePartialSheets());
+        ResultStacking bestResultStacking = evaluator.evaluate(resultStackingInOneWorkpiece, resultStackingInMultipleWorkpieces,
+                                                                                        initialData.isUsePartialSheets());
 
         initialData.setBestResultStacking(bestResultStacking);
         bestResultStacking.restoreWayOfLayingAreas(initialData.getDetails().size(), initialData);
@@ -92,13 +95,13 @@ public class StackingManager {
     }
 
     private boolean setupSingleWorkpieceForStacking(InitialDataOptimization initialData) {
-        boolean hasError = false;
+        boolean canStack = true;
         //найдем минимально возможную по площади заготовку с площадью превышающей область всех деталей
         Optional<Workpiece> workpiece = areaManager.findSuitableWorkpieceBySquare(initialData.getDetails(), initialData.getWorkpieces());
 
         if (workpiece.isEmpty()) {
-            hasError = true;
-            return hasError;
+            canStack = false;
+            return canStack;
         }
 
         Workpiece SuitableWorkpieceBySquare = workpiece.get();
@@ -108,7 +111,7 @@ public class StackingManager {
                 initialData.getAreaIdGenerator().nextGroupAreaId(), false);
 
         initialData.getFreeAreas().add(freeArea);
-        return hasError;
+        return canStack;
     }
 
     public void finalOptimization(InitialDataOptimization initialData) {
@@ -126,9 +129,12 @@ public class StackingManager {
 
             boolean hasReplacement;
             int size = occupiedAreas.size();
+            int count = 0; // временный костыль для отладки и сброса hasReplacement
 
             do {
                 hasReplacement = false;
+                count ++;
+
                 for (int i = 0; i < occupiedAreas.size() ; i++) {
 
                     OccupiedArea occupiedArea = occupiedAreas.get(size - 1 - i);
@@ -140,6 +146,11 @@ public class StackingManager {
                             hasReplacement = true;
                         }
                     }
+                }
+                if (count > 30) { // временный костыль для отладки и сброса hasReplacement
+                    hasReplacement = false;
+                    log.warn("finalOptimization: count > 30");
+                    log.info("initilalData: {}", initialData);
                 }
             } while (hasReplacement);
         }

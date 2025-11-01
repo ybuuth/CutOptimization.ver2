@@ -9,7 +9,7 @@ import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.dto.results.AreaPlacementResult;
 import com.example.cut_optimization.dto.AreaIdGenerator;
 import com.example.cut_optimization.service.FreeAreaSeeker;
-import com.example.cut_optimization.service.ResultEvaluator;
+import com.example.cut_optimization.service.resultEvaluator.Evaluatable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class AreaManager {
 
-    private final ResultEvaluator resultEvaluator;
     private final AreaMerger areaMerger;
     private final FreeAreaSeeker freeAreaSeeker;
+    private final Evaluatable evaluator;
 
     @Autowired
-    public AreaManager(ResultEvaluator resultEvaluator, AreaMerger areaMerger, FreeAreaSeeker freeAreaSeeker) {
-        this.resultEvaluator = resultEvaluator;
+    public AreaManager(AreaMerger areaMerger, FreeAreaSeeker freeAreaSeeker, Evaluatable evaluator) {
         this.areaMerger = areaMerger;
         this.freeAreaSeeker = freeAreaSeeker;
+        this.evaluator = evaluator;
     }
 
     public List<FreeArea> getFreeAreasSuitableForDetail(Detail detail, List<FreeArea> freeAreas, boolean isDisableRotation) {
@@ -397,7 +397,7 @@ public class AreaManager {
 
         resultStacking.saveWayOfLayingAreas(details.size(), initialData.getFreeAreas(), initialData.getOccupiedAreas());
 
-        bestResultStacking = resultEvaluator.compareAndUpdateTopResultWithCurrentResult(bestResultStacking,
+        bestResultStacking = evaluator.evaluate(bestResultStacking,
                 resultStacking, initialData.isUsePartialSheets());
 
         initialData.setBestResultStacking(bestResultStacking);

@@ -87,7 +87,7 @@ public class ResultStacking implements Cloneable {
         double squareOfSumOfOccupiedAreas = 0;
         AtomicReference<Double> sumOfSquaresOfFreeAreasOfUsedWorkpieces = new AtomicReference<>((double) 0);
         AtomicReference<Integer> amountOfFreeAreasOfUsedWorkpieces = new AtomicReference<>(0);
-
+        AtomicReference<Integer> countOfFreeAreas = new AtomicReference<>(0);
 
         Set<Integer> usedWorkpiecesIds = occupiedAreas.stream()
                 .map(BaseArea::getWorkpieceId)
@@ -104,10 +104,11 @@ public class ResultStacking implements Cloneable {
 
         freeAreas.stream()
                 .filter(area -> usedWorkpiecesIds.contains(area.getWorkpieceId()))
-                .forEach(area -> {
+                .forEachOrdered(area -> {
                     sumOfSquaresOfFreeAreasOfUsedWorkpieces.updateAndGet(v -> (v + Math.pow(area.getSquare(), 2)));
                     sumOfSquaresOfFreeAreas.updateAndGet(v -> (v + Math.pow(area.getSquare(), 2)));
                     amountOfFreeAreasOfUsedWorkpieces.updateAndGet(v -> (v + 1));
+                    countOfFreeAreas.updateAndGet(v -> (v + 1));
                 });
 
         for (BaseArea area : occupiedAreas) {
@@ -123,7 +124,7 @@ public class ResultStacking implements Cloneable {
         stackingCoefficients.setFreeAreaRatio(sumOfSquaresOfFreeAreas.get() / sumOfSquaresOfUsedWorkpiecesAreas.get()); //КоэфСвободныхПлощадей, КоэфИспользованияПлощади
         stackingCoefficients.setOccupiedAreaRatio(sumOfSquaresOfOccupiedAreas / sumOfSquaresOfUsedWorkpiecesAreas.get());
         stackingCoefficients.setAreaFillingFactor(squareOfSumOfOccupiedAreas / squareOfSumOfWorkpieces);
-
+        stackingCoefficients.setFreeAreaCount(countOfFreeAreas.get());
     }
 
     public void calculateStackingCoefficientsByDetail(Detail detail, FreeArea freeArea, List<FreeArea> freeAreas, List<Workpiece> workpieces) {
@@ -144,7 +145,7 @@ public class ResultStacking implements Cloneable {
 
         freeAreas.stream()
                 .filter(area -> area.getWorkpieceId() == workpieceId)
-                .forEach(freeArea1 -> {
+                .forEachOrdered(freeArea1 -> {
                     sumOfSquaresOfFreeAreasOfUsedWorkpieces.updateAndGet(v -> (v + Math.pow(freeArea1.getSquare(), 2)));
                     countOfFreeAreas.updateAndGet(v -> (v + 1));
                 });
@@ -155,6 +156,7 @@ public class ResultStacking implements Cloneable {
         stackingCoefficients.setFreeAreaCount(countOfFreeAreas.get());
         stackingCoefficients.setOccupiedAreaRatioByDetail(squareAreaDetail / squareAreaFreeArea);
         stackingCoefficients.setFreeAreaRatioByDetail(sumOfSquaresOfFreeAreasOfUsedWorkpieces.get() / sumOfSquaresOfUsedWorkpieces);
+        setAreaId(freeArea.getAreaId());
     }
 
     public void setStackingSequenceFromOccupiedAreas(List<OccupiedArea> occupiedAreas) {
