@@ -41,10 +41,6 @@ public class SimulationAnnealingStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization initialDataOptimization, boolean isStackingDetailsIntoOneWorkpiece) {
-    }
-
-    @Override
     public void stack(InitialDataOptimization initialData) {
 
         ResultStacking bestResultStacking = initialData.getBestResultStacking();

@@ -6,24 +6,24 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class StackingStrategyEvaluator implements Evaluatable{
+public class GreedyStackingStrategyEvaluator implements Evaluatable{
     @Override
     public ResultStacking evaluate(ResultStacking topResult, ResultStacking currentResult, boolean isUsePartialSheets) {
         if (topResult == null) {
             topResult = currentResult.clone();
         } else {
-            log.info("currentResultFreeAreaCount: {}, currentResultFreeAreaRatioByDetail: {}, currentResultOccupiedAreaRatioByDetail: {}," +
-                            "currentResultFreeAreaRatioOfUsedWorkpieces: {}, currentResultOccupiedAreaRatio: {}",
-                    currentResult.getStackingCoefficients().getFreeAreaCount(), currentResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
-                    currentResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
-                    currentResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
-                    currentResult.getStackingCoefficients().getOccupiedAreaRatio());
-            log.info("topResultFreeAreaCount: {}, topResultFreeAreaRatioByDetail: {}, topResultOccupiedAreaRatioByDetail: {}, "+
-                            "topResultFreeAreaRatioOfUsedWorkpieces: {}, topResultOccupiedAreaRatio: {}",
-                    topResult.getStackingCoefficients().getFreeAreaCount(), topResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
-                    topResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
-                    topResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
-                    topResult.getStackingCoefficients().getOccupiedAreaRatio());
+//            log.info("currentResultFreeAreaCount: {}, currentResultFreeAreaRatioByDetail: {}, currentResultOccupiedAreaRatioByDetail: {}," +
+//                            "currentResultFreeAreaRatioOfUsedWorkpieces: {}, currentResultOccupiedAreaRatio: {}",
+//                    currentResult.getStackingCoefficients().getFreeAreaCount(), currentResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
+//                    currentResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
+//                    currentResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
+//                    currentResult.getStackingCoefficients().getOccupiedAreaRatio());
+//            log.info("topResultFreeAreaCount: {}, topResultFreeAreaRatioByDetail: {}, topResultOccupiedAreaRatioByDetail: {}, "+
+//                            "topResultFreeAreaRatioOfUsedWorkpieces: {}, topResultOccupiedAreaRatio: {}",
+//                    topResult.getStackingCoefficients().getFreeAreaCount(), topResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
+//                    topResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
+//                    topResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
+//                    topResult.getStackingCoefficients().getOccupiedAreaRatio());
             if (isUsePartialSheets) {
                 if (currentResultIsBetterThanTopResultByOccupiedAndFreeAreaRatio(currentResult, topResult)) {
                     topResult = currentResult.clone();

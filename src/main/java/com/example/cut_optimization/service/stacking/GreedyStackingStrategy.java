@@ -9,11 +9,12 @@ import com.example.cut_optimization.service.optimizators.AreaManager;
 import com.example.cut_optimization.service.resultEvaluator.Evaluatable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component("greedyStackingStrategy")
+@Service("greedyStackingStrategy")
 public class GreedyStackingStrategy implements StackingStrategy {
 
     private final AreaManager areaManager;
@@ -26,9 +27,9 @@ public class GreedyStackingStrategy implements StackingStrategy {
     }
 
     @Override
-    public void stack(InitialDataOptimization initialData, boolean isStackingDetailsIntoOneWorkpiece) {
+    public void stack(InitialDataOptimization initialData) {
 
-        ResultStacking bestResultStacking = null;
+        ResultStacking bestResultStacking = initialData.getBestResultStacking();
         ResultStacking currentResultStacking = new ResultStacking();
 
         //будем делать несколько проходов.
@@ -76,10 +77,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
 
                 }
                 if (bestResultStackingForDetail == null) {
-
-                    if (!isStackingDetailsIntoOneWorkpiece) {
-                        currentResultStacking.setHasError(true);
-                    }
                     break;
                 }
 
@@ -106,15 +103,6 @@ public class GreedyStackingStrategy implements StackingStrategy {
                 currentResultStacking.saveWayOfLayingAreas(j + 1, initialData.getFreeAreas(), initialData.getOccupiedAreas());
             }
 
-            // проверим если это укладка в одну заготовку, то не добавили ли заготовок с виртуального склада
-            if (isStackingDetailsIntoOneWorkpiece) {
-                Set<Integer> workpiecesId = initialData.getOccupiedAreas().stream()
-                        .map(OccupiedArea::getWorkpieceId)
-                        .collect(Collectors.toSet());
-                if (workpiecesId.size() > 1) {
-                    currentResultStacking.setHasError(true);
-                }
-            }
             if (initialData.getOccupiedAreas().size() < initialData.getDetails().size()) {
                 currentResultStacking.setHasError(true);
             }
@@ -141,8 +129,4 @@ public class GreedyStackingStrategy implements StackingStrategy {
 
         initialData.setBestResultStacking(bestResultStacking);
     }
-
-    @Override
-    public void stack(InitialDataOptimization initialDataOptimization) {}
-
 }

@@ -43,16 +43,18 @@ public class StackingManager {
 
             initialData.getWorkpieces().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? 1 : -1);
             initialData.getDetails().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
-            resultStackingInOneWorkpiece.setHasError(true);
+            //resultStackingInOneWorkpiece.setHasError(true);
 
         } else {
-
+            //initialData.getWorkpieces().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
+            //initialData.getDetails().sort((o1, o2) -> (o1.getSquare() > o2.getSquare()) ? -1 : 1);
+//
             boolean canStack = setupSingleWorkpieceForStacking(initialData);
             if (canStack) {
 
                 boolean isStackingDetailsIntoOneWorkpiece = true;
 
-                greedyStackingStrategy.stack(initialData, isStackingDetailsIntoOneWorkpiece);
+                greedyStackingStrategy.stack(initialData);
 
                 resultStackingInOneWorkpiece = initialData.getBestResultStacking();
 
@@ -72,18 +74,19 @@ public class StackingManager {
             initialData.getFreeAreas().add(freeArea);
         }
 
-        greedyStackingStrategy.stack(initialData,false);
+        greedyStackingStrategy.stack(initialData);
 
-        ResultStacking resultStackingInMultipleWorkpieces = initialData.getBestResultStacking();
-
-        if (resultStackingInOneWorkpiece.isHasError() && resultStackingInMultipleWorkpieces == null) {
+//        ResultStacking resultStackingInMultipleWorkpieces = initialData.getBestResultStacking();
+//
+//        if (resultStackingInOneWorkpiece.isHasError() && resultStackingInMultipleWorkpieces == null) {
+//            return Optional.empty();
+//        }
+//
+        ResultStacking bestResultStacking = initialData.getBestResultStacking();
+        if (bestResultStacking.isHasError()) {
             return Optional.empty();
         }
 
-        ResultStacking bestResultStacking = evaluator.evaluate(resultStackingInOneWorkpiece, resultStackingInMultipleWorkpieces,
-                                                                                        initialData.isUsePartialSheets());
-
-        initialData.setBestResultStacking(bestResultStacking);
         bestResultStacking.restoreWayOfLayingAreas(initialData.getDetails().size(), initialData);
 
         return Optional.of(bestResultStacking);
