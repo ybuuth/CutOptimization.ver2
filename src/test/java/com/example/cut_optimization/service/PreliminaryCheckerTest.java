@@ -5,6 +5,7 @@ import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.EndlessWorkpiece;
 import com.example.cut_optimization.dto.details.Workpiece;
 import com.example.cut_optimization.exception.CommonException;
+import com.example.cut_optimization.util.PreliminaryChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

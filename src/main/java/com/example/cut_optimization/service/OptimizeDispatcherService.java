@@ -5,6 +5,7 @@ import com.example.cut_optimization.dto.areas.CuttingLayout;
 import com.example.cut_optimization.dto.baseDto.BaseArea;
 import com.example.cut_optimization.dto.details.Detail;
 import com.example.cut_optimization.dto.details.Workpiece;
+import com.example.cut_optimization.util.PreliminaryChecker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

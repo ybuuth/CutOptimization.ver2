@@ -1,4 +1,4 @@
-package com.example.cut_optimization.service;
+package com.example.cut_optimization.util;
 
 import com.example.cut_optimization.dto.AreaIdGenerator;
 import com.example.cut_optimization.dto.InitialDataOptimization;
