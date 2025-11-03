@@ -12,24 +12,12 @@ public class GreedyStackingStrategyEvaluator implements Evaluatable{
         if (topResult == null) {
             topResult = currentResult.clone();
         } else {
-//            log.info("currentResultFreeAreaCount: {}, currentResultFreeAreaRatioByDetail: {}, currentResultOccupiedAreaRatioByDetail: {}," +
-//                            "currentResultFreeAreaRatioOfUsedWorkpieces: {}, currentResultOccupiedAreaRatio: {}",
-//                    currentResult.getStackingCoefficients().getFreeAreaCount(), currentResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
-//                    currentResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
-//                    currentResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
-//                    currentResult.getStackingCoefficients().getOccupiedAreaRatio());
-//            log.info("topResultFreeAreaCount: {}, topResultFreeAreaRatioByDetail: {}, topResultOccupiedAreaRatioByDetail: {}, "+
-//                            "topResultFreeAreaRatioOfUsedWorkpieces: {}, topResultOccupiedAreaRatio: {}",
-//                    topResult.getStackingCoefficients().getFreeAreaCount(), topResult.getStackingCoefficients().getFreeAreaRatioByDetail(),
-//                    topResult.getStackingCoefficients().getOccupiedAreaRatioByDetail(),
-//                    topResult.getStackingCoefficients().getFreeAreaRatioOfUsedWorkpieces(),
-//                    topResult.getStackingCoefficients().getOccupiedAreaRatio());
             if (isUsePartialSheets) {
                 if (currentResultIsBetterThanTopResultByOccupiedAndFreeAreaRatio(currentResult, topResult)) {
                     topResult = currentResult.clone();
                 }
             } else {
-                if (currentResultIsBetterThanTopResultByOccupiedAndFreeAreaRatio(currentResult, topResult) ||
+                if (currentResultIsBetterThanTopResultByOccupiedAndFreeAreaRatio(currentResult, topResult) &&
                     currentResultIsBetterThanTopResultByFreeAreaCount(currentResult, topResult)) {
                     topResult = currentResult.clone();
                 }
